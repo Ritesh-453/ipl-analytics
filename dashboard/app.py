@@ -146,11 +146,13 @@ hr { border: none; border-top: 1px solid #e8eaf0; margin: 1.5rem 0; }
 
 st.markdown("""
 <style>
-* { color: #1a1a2e !important; }
-select, input, textarea { 
-    color: #1a1a2e !important; 
-    background: white !important; 
-}
+/* Fix input visibility without breaking tabs */
+.stSelectbox div[data-baseweb="select"] span { color: #1a1a2e !important; }
+.stSelectbox div[data-baseweb="select"] div { color: #1a1a2e !important; }
+div[data-baseweb="menu"] li { color: #1a1a2e !important; }
+.stNumberInput input { color: #1a1a2e !important; }
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] { color: #ffffff !important; }
+[data-testid="stTabs"] [role="tab"] { color: #6b7280 !important; }
 </style>
 """, unsafe_allow_html=True)
 
