@@ -1,0 +1,4 @@
+src/models/*.joblib
+sql_analysis/ipl.db
+__pycache__/
+*.pyc
