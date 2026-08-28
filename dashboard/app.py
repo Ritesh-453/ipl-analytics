@@ -16,7 +16,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 st.set_page_config(page_title="IPL Analytics", page_icon="", layout="wide")
 
 # ─────────────────────────────────────────────────────────────
-# CSS
+# CSS — FIXED: dropdown text visibility without breaking tabs
 # ─────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -28,22 +28,70 @@ html, body, [class*="css"] {
 }
 .stApp { background-color: #f5f6fa; }
 
-/* Fix all input text visibility */
-input, textarea, [data-baseweb="select"] * {
+/* ── DROPDOWNS / SELECT ── */
+/* The outer container */
+div[data-baseweb="select"] > div:first-child {
+    background-color: #ffffff !important;
+    border-color: #d1d5db !important;
+    border-radius: 8px !important;
+}
+/* Selected value text — must be dark */
+div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] div[class*="singleValue"],
+div[data-baseweb="select"] div[class*="placeholder"] {
     color: #1a1a2e !important;
+}
+/* Dropdown arrow icon */
+div[data-baseweb="select"] svg { color: #6b7280 !important; }
+
+/* Options popover — white background, dark text */
+div[data-baseweb="popover"],
+div[data-baseweb="menu"],
+ul[data-baseweb="menu"] {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+/* Each option item */
+li[role="option"] {
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
+}
+li[role="option"]:hover,
+li[role="option"][aria-selected="true"] {
+    background-color: #f3f4f6 !important;
+    color: #1a1a2e !important;
+}
+
+/* ── NUMBER INPUTS ── */
+.stNumberInput input {
+    color: #1a1a2e !important;
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+}
+
+/* ── MULTISELECT ── */
+[data-testid="stMultiSelect"] {
     background-color: #ffffff !important;
 }
-[data-baseweb="select"] [data-testid="stMarkdownContainer"] { color: #1a1a2e !important; }
-.stSelectbox div[data-baseweb="select"] > div { background-color: #ffffff !important; color: #1a1a2e !important; }
-div[data-baseweb="popover"] { background: #ffffff !important; }
-div[data-baseweb="menu"] { background: #ffffff !important; }
-li[role="option"] { color: #1a1a2e !important; background: #ffffff !important; }
-li[role="option"]:hover { background: #f3f4f6 !important; }
-.stNumberInput input { color: #1a1a2e !important; background: #ffffff !important; border: 1px solid #d1d5db !important; border-radius: 8px !important; }
-.stCheckbox label { color: #1a1a2e !important; }
-[data-testid="stMultiSelect"] span { color: #1a1a2e !important; }
+[data-testid="stMultiSelect"] span {
+    color: #1a1a2e !important;
+}
+/* Multiselect tags */
+[data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background-color: #e8eaf0 !important;
+}
+[data-testid="stMultiSelect"] [data-baseweb="tag"] span {
+    color: #1a1a2e !important;
+}
 
-/* Tab bar */
+/* ── CHECKBOX ── */
+.stCheckbox label { color: #1a1a2e !important; }
+
+/* ── TAB BAR — isolated, not touched by select rules ── */
 [data-testid="stTabs"] [role="tablist"] {
     background: #ffffff;
     border-radius: 10px;
@@ -55,17 +103,17 @@ li[role="option"]:hover { background: #f3f4f6 !important; }
     border-radius: 8px;
     font-size: 0.82rem;
     font-weight: 600;
-    color: #6b7280;
     padding: 8px 16px;
     border: none;
     background: transparent;
+    color: #6b7280 !important;
 }
 [data-testid="stTabs"] [role="tab"][aria-selected="true"] {
-    background: #1a1a2e;
-    color: #ffffff;
+    background: #1a1a2e !important;
+    color: #ffffff !important;
 }
 
-/* Metric cards */
+/* ── METRIC CARDS ── */
 [data-testid="stMetric"] {
     background: #ffffff;
     border: 1px solid #e8eaf0;
@@ -86,7 +134,7 @@ li[role="option"]:hover { background: #f3f4f6 !important; }
     color: #1a1a2e !important;
 }
 
-/* Buttons */
+/* ── BUTTONS ── */
 [data-testid="stButton"] > button {
     background: #1a1a2e;
     color: #ffffff;
@@ -103,7 +151,7 @@ li[role="option"]:hover { background: #f3f4f6 !important; }
     box-shadow: 0 4px 12px rgba(26,26,46,0.25);
 }
 
-/* Popover filter button */
+/* ── POPOVER FILTER BUTTON ── */
 [data-testid="stPopover"] > button {
     background: #1a1a2e !important;
     color: #ffffff !important;
@@ -114,14 +162,18 @@ li[role="option"]:hover { background: #f3f4f6 !important; }
     padding: 8px 18px !important;
 }
 
-/* Expander */
+/* ── EXPANDER ── */
 [data-testid="stExpander"] {
     background: #ffffff;
     border: 1px solid #e8eaf0;
     border-radius: 12px;
 }
+[data-testid="stExpander"] summary {
+    color: #1a1a2e !important;
+    font-weight: 600;
+}
 
-/* Dataframe */
+/* ── DATAFRAME ── */
 [data-testid="stDataFrame"] {
     border-radius: 10px;
     overflow: hidden;
@@ -141,18 +193,6 @@ hr { border: none; border-top: 1px solid #e8eaf0; margin: 1.5rem 0; }
 }
 .page-header { font-size: 1.6rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.25rem; }
 .page-subtitle { font-size: 0.85rem; color: #6b7280; margin-bottom: 1.5rem; }
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-/* Fix input visibility without breaking tabs */
-.stSelectbox div[data-baseweb="select"] span { color: #1a1a2e !important; }
-.stSelectbox div[data-baseweb="select"] div { color: #1a1a2e !important; }
-div[data-baseweb="menu"] li { color: #1a1a2e !important; }
-.stNumberInput input { color: #1a1a2e !important; }
-[data-testid="stTabs"] [role="tab"][aria-selected="true"] { color: #ffffff !important; }
-[data-testid="stTabs"] [role="tab"] { color: #6b7280 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -345,7 +385,6 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # TAB 1 — TEAMS
 # ═══════════════════════════════════════════════════════════
 with tab1:
-    # Filter button — top right
     fcol1, fcol2 = st.columns([5,1])
     with fcol1:
         st.markdown('<div class="page-header" style="font-size:1.2rem;">Team Performance</div>', unsafe_allow_html=True)
@@ -354,11 +393,9 @@ with tab1:
             selected_seasons_t1 = st.multiselect("Season", all_seasons, default=all_seasons, key="t1_seasons")
             selected_team = st.selectbox("Team", ["All Teams"] + all_teams, key="t1_team")
 
-    # Apply filters
     mf1 = matches[matches["season"].isin(selected_seasons_t1)] if selected_seasons_t1 else matches.copy()
     team_matches = mf1[(mf1["team1"]==selected_team)|(mf1["team2"]==selected_team)] if selected_team != "All Teams" else mf1
 
-    # Metrics
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Matches", len(team_matches))
     if selected_team != "All Teams":
@@ -403,7 +440,6 @@ with tab1:
 
     st.markdown("---")
 
-    # Head-to-Head
     st.markdown('<div class="section-title">Head-to-Head</div>', unsafe_allow_html=True)
     h2h_col1, h2h_col2 = st.columns(2)
     with h2h_col1:
@@ -712,26 +748,35 @@ with tab5:
     y_test_f   = future_pkg["y_test"]
     toss_base  = future_pkg["toss_baseline_acc"]
 
-    with st.expander("Model Performance & Confusion Matrix", expanded=False):
-        model_acc = accuracy_score(y_test_f, clf_future.predict(X_test_f))
-        pm1,pm2,pm3 = st.columns(3)
-        pm1.metric("Model Accuracy",       f"{round(model_acc*100,1)}%")
-        pm2.metric("Toss-Winner Baseline", f"{round(toss_base*100,1)}%")
-        pm3.metric("Improvement",          f"+{round((model_acc-toss_base)*100,1)}%")
+    # ── Model Performance — always visible, no expander ──
+    st.markdown('<div class="section-title">Model Performance</div>', unsafe_allow_html=True)
+    model_acc = accuracy_score(y_test_f, clf_future.predict(X_test_f))
+    pm1, pm2, pm3 = st.columns(3)
+    pm1.metric("Model Accuracy",       f"{round(model_acc*100,1)}%")
+    pm2.metric("Toss-Winner Baseline", f"{round(toss_base*100,1)}%")
+    pm3.metric("Improvement",          f"+{round((model_acc-toss_base)*100,1)}%")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    cm_col, _ = st.columns([1, 1])
+    with cm_col:
         cm = confusion_matrix(y_test_f, clf_future.predict(X_test_f))
-        fig_cm = px.imshow(cm, text_auto=True,
-                           labels=dict(x="Predicted",y="Actual"),
-                           x=["Team 2 Wins","Team 1 Wins"],
-                           y=["Team 2 Wins","Team 1 Wins"],
-                           color_continuous_scale=MONO_BLUE)
+        fig_cm = px.imshow(
+            cm, text_auto=True,
+            labels=dict(x="Predicted", y="Actual"),
+            x=["Team 2 Wins", "Team 1 Wins"],
+            y=["Team 2 Wins", "Team 1 Wins"],
+            color_continuous_scale=MONO_BLUE,
+        )
         apply_theme(fig_cm, "Confusion Matrix", height=320)
         st.plotly_chart(fig_cm, use_container_width=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("---")
+
     venue_list   = sorted(matches["venue"].dropna().unique())
     known_venues = list(le_venue.classes_)
 
-    ms1,ms2,ms3,ms4 = st.columns(4)
+    ms1, ms2, ms3, ms4 = st.columns(4)
     with ms1: t1_venue = st.selectbox("Venue", venue_list, key="f_venue")
     with ms2: t1_toss  = st.selectbox("Toss Winner", ["Team 1","Team 2"], key="f_toss")
     with ms3: t1_dec   = st.selectbox("Toss Decision", ["bat","field"], key="f_dec")
