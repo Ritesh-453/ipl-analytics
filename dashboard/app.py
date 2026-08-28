@@ -91,6 +91,19 @@ li[role="option"][aria-selected="true"] {
 /* ── CHECKBOX ── */
 .stCheckbox label { color: #1a1a2e !important; }
 
+/* ── ALL INPUT LABELS (selectbox, number input, multiselect) ── */
+label[data-testid="stWidgetLabel"],
+.stSelectbox label,
+.stNumberInput label,
+.stMultiSelect label,
+.stTextInput label {
+    color: #1a1a2e !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em;
+    margin-bottom: 4px !important;
+}
+
 /* ── TAB BAR — isolated, not touched by select rules ── */
 [data-testid="stTabs"] [role="tablist"] {
     background: #ffffff;
@@ -793,8 +806,7 @@ with tab5:
                     </div>""", unsafe_allow_html=True)
         t1_players = []
         for i in range(11):
-            p = st.selectbox(f"T1 Player {i+1}", [""] + all_players,
-                             key=f"t1p{i}", label_visibility="collapsed")
+            p = st.selectbox(f"Player {i+1}", [""] + all_players, key=f"t1p{i}")
             if p: t1_players.append(p)
         st.caption(f"{len(t1_players)}/11 players selected")
 
@@ -805,8 +817,7 @@ with tab5:
                     </div>""", unsafe_allow_html=True)
         t2_players = []
         for i in range(11):
-            p = st.selectbox(f"T2 Player {i+1}", [""] + all_players,
-                             key=f"t2p{i}", label_visibility="collapsed")
+            p = st.selectbox(f"Player {i+1}", [""] + all_players, key=f"t2p{i}")
             if p: t2_players.append(p)
         st.caption(f"{len(t2_players)}/11 players selected")
 
