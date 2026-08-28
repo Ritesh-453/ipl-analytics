@@ -144,6 +144,16 @@ hr { border: none; border-top: 1px solid #e8eaf0; margin: 1.5rem 0; }
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+* { color: #1a1a2e !important; }
+select, input, textarea { 
+    color: #1a1a2e !important; 
+    background: white !important; 
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ─────────────────────────────────────────────────────────────
 # THEME
 # ─────────────────────────────────────────────────────────────
